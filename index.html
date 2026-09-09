@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdminPay — Pasarela de pago para Chile y Latinoamérica</title>
+<meta name="description" content="AdminPay es la pasarela de pago que recibe y envía dinero en línea: Pay In y Pay Out, con seguridad certificada y conciliación diaria.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1A1880;
+    --blue:#2E5BFF;
+    --lav:#EEEDFE;
+    --ink:#100F26;
+    --paper:#FBFBFE;
+    --line:#E1DFF6;
+    --muted:#5B5A74;
+    --ok:#129B6B;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Inter",system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brandword{font-family:"Sora",sans-serif;letter-spacing:-.02em;line-height:1.1}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:"Sora",sans-serif;font-weight:600;font-size:15px;
+    padding:13px 22px;border-radius:12px;border:1px solid transparent;
+    cursor:pointer;transition:transform .12s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .btn:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:#13116a;transform:translateY(-1px);box-shadow:0 10px 24px -12px rgba(26,24,128,.8)}
+  .btn-ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+
+  /* ---------- Logo ---------- */
+  .logo{display:inline-flex;align-items:center;gap:11px}
+  .logo svg{display:block}
+  .brandword{font-weight:700;font-size:22px;color:var(--navy)}
+  .brandword b{color:var(--blue);font-weight:700}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(251,251,254,.82);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{font-size:15px;color:var(--muted);font-weight:500}
+  .nav-links a:hover{color:var(--navy)}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  .menu-btn{display:none;background:none;border:none;cursor:pointer;padding:8px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:76px 0 88px;position:relative;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .eyebrow{
+    display:inline-block;font-size:13px;font-weight:600;color:var(--navy);
+    background:var(--lav);padding:6px 13px;border-radius:999px;margin-bottom:22px;
+  }
+  .hero h1{font-size:52px;font-weight:700;margin-bottom:20px}
+  .hero h1 .g{
+    background:linear-gradient(90deg,var(--navy),var(--blue));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lead{font-size:19px;color:var(--muted);max-width:30ch;margin-bottom:32px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+  .trust{margin-top:38px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+  .trust .chips{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-weight:600;font-size:13px;color:var(--ink);background:#fff}
+
+  /* ---------- Hero mock card ---------- */
+  .mock{
+    position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;
+    padding:22px;box-shadow:0 40px 80px -50px rgba(26,24,128,.55);
+  }
+  .mock::before{
+    content:"";position:absolute;inset:-40px -30px auto auto;width:220px;height:220px;
+    background:radial-gradient(circle,rgba(46,91,255,.16),transparent 70%);z-index:-1;
+  }
+  .mock-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .mock-head .t{font-family:"Sora";font-weight:600;font-size:15px}
+  .live{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ok);font-weight:600}
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;box-shadow:0 0 0 0 rgba(18,155,107,.5);animation:pulse 2s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(18,155,107,0)}100%{box-shadow:0 0 0 0 rgba(18,155,107,0)}}
+  .txn{display:flex;align-items:center;gap:13px;padding:13px 0;border-top:1px solid var(--line)}
+  .txn .ic{width:38px;height:38px;border-radius:10px;background:var(--lav);display:grid;place-items:center;color:var(--navy);flex:none}
+  .txn .info{flex:1;min-width:0}
+  .txn .info .n{font-weight:600;font-size:14px}
+  .txn .info .s{font-size:12px;color:var(--muted)}
+  .txn .amt{font-family:"Sora";font-weight:600;font-size:15px;color:var(--ok)}
+  .txn .amt.out{color:var(--navy)}
+  .badge-ok{font-size:11px;font-weight:600;color:var(--ok);background:rgba(18,155,107,.1);padding:3px 8px;border-radius:6px}
+
+  /* ---------- Sections ---------- */
+  section.block{padding:88px 0}
+  .band{background:var(--lav)}
+  .sec-head{max-width:56ch;margin-bottom:48px}
+  .sec-head h2{font-size:38px;font-weight:700;margin-bottom:16px}
+  .sec-head p{font-size:18px;color:var(--muted)}
+
+  /* Pay in / pay out */
+  .flow{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .flow-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px}
+  .flow-card .k{font-family:"Sora";font-weight:600;font-size:13px;color:var(--blue);margin-bottom:10px}
+  .flow-card h3{font-size:24px;margin-bottom:12px}
+  .flow-card p{color:var(--muted);font-size:16px}
+  .flow-card .arrow{font-size:26px;margin-bottom:16px;color:var(--navy)}
+
+  /* Capabilities table-grid */
+  .caps{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#fff}
+  .caps-row{display:grid;grid-template-columns:repeat(3,1fr)}
+  .cap{padding:30px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cap:nth-child(3n){border-right:none}
+  .cap .ci{width:42px;height:42px;border-radius:11px;background:var(--navy);color:#fff;display:grid;place-items:center;margin-bottom:16px}
+  .cap h3{font-size:18px;margin-bottom:8px}
+  .cap p{color:var(--muted);font-size:15px}
+
+  /* Coverage */
+  .cover{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+  .cover ul{list-style:none;margin-top:10px}
+  .cover li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:16px}
+  .cover li svg{flex:none;margin-top:4px;color:var(--blue)}
+  .map{background:var(--navy);border-radius:22px;padding:40px;color:#fff;min-height:300px;display:flex;flex-direction:column;justify-content:center}
+  .map .big{font-family:"Sora";font-size:60px;font-weight:700;line-height:1;background:linear-gradient(90deg,#fff,#B9C2FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .map .sub{color:#C7C6E8;margin-top:8px;font-size:16px}
+  .map .stalist{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  .map .stalist span{border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:6px 12px;font-size:13px}
+
+  /* CTA */
+  .cta{background:var(--navy);color:#fff;border-radius:26px;padding:64px 48px;text-align:center;position:relative;overflow:hidden}
+  .cta::after{content:"";position:absolute;inset:auto -60px -80px auto;width:320px;height:320px;background:radial-gradient(circle,rgba(46,91,255,.35),transparent 70%)}
+  .cta h2{font-size:40px;font-weight:700;margin-bottom:16px;position:relative}
+  .cta p{color:#C7C6E8;font-size:18px;max-width:52ch;margin:0 auto 30px;position:relative}
+  .cta .btn-primary{background:var(--blue)}
+  .cta .btn-primary:hover{background:#1c47e0}
+  .cta .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+  .cta .btn-ghost:hover{border-color:#fff;color:#fff}
+  .cta .actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative}
+
+  /* Footer */
+  footer{border-top:1px solid var(--line);padding:44px 0;margin-top:20px}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+  .foot p{color:var(--muted);font-size:14px}
+  .foot .links{display:flex;gap:24px}
+  .foot .links a{color:var(--muted);font-size:14px}
+  .foot .links a:hover{color:var(--navy)}
+
+  /* Reveal */
+  .rv{opacity:0;transform:translateY(16px)}
+  .rv.in{opacity:1;transform:none;transition:opacity .7s ease, transform .7s ease}
+
+  /* Casos de éxito */
+  #casos{border-top:1px solid var(--line)}
+  .cases-intro{text-align:center;max-width:60ch;margin-left:auto;margin-right:auto}
+  .clients{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:0 auto 52px;max-width:840px}
+  .client{border:1px solid var(--line);border-radius:10px;padding:11px 22px;font-family:"Sora";font-weight:600;color:var(--navy);font-size:16px;background:#fff}
+  .cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:40px}
+  .case{border:1px solid var(--line);border-radius:18px;padding:30px;background:#fff}
+  .case .metric{font-family:"Sora";font-weight:700;font-size:42px;line-height:1;color:var(--navy);margin-bottom:6px}
+  .case .metric span{color:var(--blue)}
+  .case .ml{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:16px}
+  .case p{color:var(--muted);font-size:15px;margin-bottom:18px}
+  .case .who{display:flex;align-items:center;gap:11px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;font-weight:600}
+  .case .who .dot{width:32px;height:32px;border-radius:8px;background:var(--lav);color:var(--navy);display:grid;place-items:center;font-family:"Sora";font-size:13px;flex:none}
+  .quote{background:var(--navy);color:#fff;border-radius:22px;padding:46px 52px;position:relative;overflow:hidden}
+  .quote::before{content:"\201C";position:absolute;top:2px;left:30px;font-family:"Sora";font-size:130px;color:rgba(255,255,255,.13);line-height:1}
+  .quote blockquote{font-family:"Sora";font-weight:500;font-size:24px;line-height:1.42;max-width:42ch;position:relative;margin-bottom:24px}
+  .quote .cite{display:flex;align-items:center;gap:14px;position:relative}
+  .quote .cite .av{width:46px;height:46px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:"Sora";font-weight:700;flex:none}
+  .quote .cite .nm{font-weight:600;font-size:15px}
+  .quote .cite .rl{color:#C7C6E8;font-size:13px}
+
+  /* Responsive */
+  @media(max-width:900px){
+    .cases-grid{grid-template-columns:1fr}
+    .quote{padding:34px 26px}
+    .quote blockquote{font-size:20px}
+    .hero-grid{grid-template-columns:1fr;gap:44px}
+    .hero h1{font-size:40px}
+    .hero p.lead{max-width:none}
+    .flow,.cover{grid-template-columns:1fr}
+    .caps-row{grid-template-columns:1fr}
+    .cap{border-right:none}
+    .nav-links{display:none}
+    .menu-btn{display:block}
+    .sec-head h2,.cta h2{font-size:30px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    .rv{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo" aria-label="AdminPay inicio">
+      <svg width="40" height="40" viewBox="0 0 40 40" role="img" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="#1A1880"/>
+        <path d="M11 29 L20 11 L29 29" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="15" y1="24" x2="25" y2="24" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+        <circle cx="20" cy="11" r="3.1" fill="#2E5BFF"/>
+      </svg>
+      <span class="brandword">Admin<b>Pay</b></span>
+    </a>
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#casos">Casos</a>
+      <a href="#producto">Producto</a>
+      <a href="#capacidades">Capacidades</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="#cobertura">Cobertura</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contacto" class="btn btn-primary">Solicitar acceso</a>
+    </div>
+    <button class="menu-btn" aria-label="Menú">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1880" stroke-width="2"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+    </button>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="rv">
+      <span class="eyebrow">Pasarela de pago · Chile y Latinoamérica</span>
+      <h1>Recibe y envía dinero en línea con <span class="g">una sola integración</span></h1>
+      <p class="lead">AdminPay conecta tu negocio con tarjetas, transferencias y billeteras — cobros y pagos, en un panel único.</p>
+      <div class="hero-actions">
+        <a href="#contacto" class="btn btn-primary">Solicitar acceso</a>
+        <a href="#producto" class="btn btn-ghost">Ver cómo funciona</a>
+      </div>
+      <div class="trust">
+        <span>Procesamos sobre infraestructura certificada</span>
+        <div class="chips">
+          <span class="chip">Visa</span>
+          <span class="chip">Mastercard</span>
+          <span class="chip">PCI DSS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mock rv" aria-hidden="true">
+      <div class="mock-head">
+        <span class="t">Movimientos de hoy</span>
+        <span class="live"><i></i> En vivo</span>
+      </div>
+      <div class="txn">
+        <div class="ic">↓</div>
+        <div class="info"><div class="n">Cobro · Tienda Aurora</div><div class="s">Visa ···· 4242 · hace 2 min</div></div>
+        <div class="amt">+$45.000</div>
+      </div>
+      <div class="txn">
+        <div class="ic">↓</div>
+        <div class="info"><div class="n">Cobro · Servicios Nube SpA</div><div class="s">Transferencia · hace 8 min</div></div>
+        <div class="amt">+$128.500</div>
+      </div>
+      <div class="txn">
+        <div class="ic">↑</div>
+        <div class="info"><div class="n">Pago a proveedor</div><div class="s">Retiro programado · hace 20 min</div></div>
+        <div class="amt out">−$92.000</div>
+      </div>
+      <div class="txn" style="justify-content:space-between">
+        <div class="info"><div class="s">Conciliado automáticamente</div></div>
+        <span class="badge-ok">✓ Cuadrado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CASOS DE ÉXITO ================= -->
+<section class="block" id="casos">
+  <div class="wrap">
+    <div class="sec-head cases-intro rv">
+      <h2>Casos de éxito</h2>
+      <p>Negocios que ya cobran y pagan con AdminPay.</p>
+    </div>
+
+    <div class="clients rv">
+      <span class="client">[Cliente 1]</span>
+      <span class="client">[Cliente 2]</span>
+      <span class="client">[Cliente 3]</span>
+      <span class="client">[Cliente 4]</span>
+      <span class="client">[Cliente 5]</span>
+    </div>
+
+    <div class="cases-grid">
+      <div class="case rv">
+        <div class="metric">[+00]<span>%</span></div>
+        <div class="ml">[Métrica lograda]</div>
+        <p>[Qué necesitaba el cliente y cómo lo resolvió AdminPay, en una o dos líneas.]</p>
+        <div class="who"><span class="dot">C1</span> [Nombre del comercio] · [rubro]</div>
+      </div>
+      <div class="case rv">
+        <div class="metric">[00<span>k</span>]</div>
+        <div class="ml">[Métrica lograda]</div>
+        <p>[Qué necesitaba el cliente y cómo lo resolvió AdminPay, en una o dos líneas.]</p>
+        <div class="who"><span class="dot">C2</span> [Nombre del comercio] · [rubro]</div>
+      </div>
+      <div class="case rv">
+        <div class="metric">[00<span>h</span>]</div>
+        <div class="ml">[Métrica lograda]</div>
+        <p>[Qué necesitaba el cliente y cómo lo resolvió AdminPay, en una o dos líneas.]</p>
+        <div class="who"><span class="dot">C3</span> [Nombre del comercio] · [rubro]</div>
+      </div>
+    </div>
+
+    <div class="quote rv">
+      <blockquote>[Frase textual de un cliente sobre lo que cambió al operar con AdminPay.]</blockquote>
+      <div class="cite">
+        <span class="av">NN</span>
+        <div>
+          <div class="nm">[Nombre del cliente]</div>
+          <div class="rl">[Cargo] · [Empresa]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAY IN / PAY OUT ================= -->
+<section class="block band" id="producto">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Un flujo para el dinero que entra y el que sale</h2>
+      <p>La mayoría de las pasarelas solo cobran. AdminPay hace las dos direcciones desde el mismo lugar.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-card rv">
+        <div class="arrow">↓</div>
+        <div class="k">PAY IN</div>
+        <h3>Recibe cobros</h3>
+        <p>Enlaces de pago, botón embebido o API. Tarjetas, transferencias y billeteras, con confirmación al instante por webhook.</p>
+      </div>
+      <div class="flow-card rv">
+        <div class="arrow">↑</div>
+        <div class="k">PAY OUT</div>
+        <h3>Envía pagos</h3>
+        <p>Retiros y pagos a proveedores o clientes, individuales o en lote, con trazabilidad completa de cada operación.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAPACIDADES ================= -->
+<section class="block" id="capacidades">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Todo lo que necesita una operación seria</h2>
+      <p>No es solo procesar un pago. Es controlarlo, cuadrarlo y responder cuando algo pasa.</p>
+    </div>
+    <div class="caps rv">
+      <div class="caps-row">
+        <div class="cap">
+          <div class="ci">▦</div>
+          <h3>Panel en tiempo real</h3>
+          <p>Cada transacción visible al instante, con filtros por comercio, medio de pago y estado.</p>
+        </div>
+        <div class="cap">
+          <div class="ci">⇄</div>
+          <h3>Conciliación diaria</h3>
+          <p>Cuadre automático contra los operadores. Sabes qué entró, qué salió y qué está pendiente.</p>
+        </div>
+        <div class="cap">
+          <div class="ci">◈</div>
+          <h3>Prevención de fraude</h3>
+          <p>Reglas y monitoreo de patrones sospechosos antes de que una operación se apruebe.</p>
+        </div>
+        <div class="cap">
+          <div class="ci">◔</div>
+          <h3>Monitoreo 24/7</h3>
+          <p>Alertas y logging continuo para detectar incidentes y responder sin esperar al día siguiente.</p>
+        </div>
+        <div class="cap">
+          <div class="ci">▤</div>
+          <h3>Cumplimiento tributario</h3>
+          <p>Documentación y reportes alineados a la normativa chilena para cerrar cada período sin sorpresas.</p>
+        </div>
+        <div class="cap">
+          <div class="ci">🛡</div>
+          <h3>PCI DSS</h3>
+          <p>Datos sensibles cifrados y accesos controlados bajo el estándar de la industria de tarjetas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SEGURIDAD ================= -->
+<section class="block band" id="seguridad">
+  <div class="wrap cover">
+    <div class="rv">
+      <div class="sec-head" style="margin-bottom:0">
+        <h2>Seguridad que no se negocia</h2>
+        <p>El dinero de tus clientes se maneja con el mismo cuidado con que lo manejarías tú.</p>
+      </div>
+      <ul>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Cifrado de datos sensibles en tránsito y en reposo</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Autenticación multifactor en los accesos</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Alta disponibilidad, con continuidad de servicio</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Registro de auditoría de cada operación</li>
+      </ul>
+    </div>
+    <div class="map rv">
+      <div class="big">99,9%</div>
+      <div class="sub">de disponibilidad objetivo del servicio</div>
+      <div class="stalist">
+        <span>Cifrado extremo a extremo</span>
+        <span>Monitoreo continuo</span>
+        <span>Respaldo de datos</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COBERTURA ================= -->
+<section class="block" id="cobertura">
+  <div class="wrap cover">
+    <div class="map rv" style="background:linear-gradient(135deg,#1A1880,#2E5BFF)">
+      <div class="big" style="background:linear-gradient(90deg,#fff,#E6E9FF);-webkit-background-clip:text;background-clip:text;color:transparent">LatAm</div>
+      <div class="sub">Diseñada en Chile, pensada para crecer en la región</div>
+      <div class="stalist">
+        <span>Chile</span><span>Perú</span><span>Colombia</span><span>México</span>
+      </div>
+    </div>
+    <div class="rv">
+      <div class="sec-head" style="margin-bottom:0">
+        <h2>Empieza en Chile, escala sin rehacer nada</h2>
+        <p>La misma integración y el mismo panel te acompañan cuando abras operaciones en otros países. Sin migrar, sin empezar de cero.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA / CONTACTO ================= -->
+<section class="block" id="contacto">
+  <div class="wrap">
+    <div class="cta rv">
+      <h2>Conversemos sobre tu operación</h2>
+      <p>Cuéntanos qué necesitas cobrar o pagar y te mostramos cómo AdminPay lo resuelve.</p>
+      <div class="actions">
+        <a href="mailto:contacto@adminpay.cl" class="btn btn-primary">Escríbenos</a>
+        <a href="mailto:contacto@adminpay.cl" class="btn btn-ghost">Agendar una demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap foot">
+    <a href="#top" class="logo">
+      <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="#1A1880"/>
+        <path d="M11 29 L20 11 L29 29" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="15" y1="24" x2="25" y2="24" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+        <circle cx="20" cy="11" r="3.1" fill="#2E5BFF"/>
+      </svg>
+      <span class="brandword" style="font-size:18px">Admin<b>Pay</b></span>
+    </a>
+    <div class="links">
+      <a href="#producto">Producto</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="mailto:contacto@adminpay.cl">Contacto</a>
+    </div>
+    <p>© 2026 AdminPay · adminpay.cl</p>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
